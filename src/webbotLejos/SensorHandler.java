@@ -47,7 +47,7 @@ public class SensorHandler implements Runnable{
 			this.temperature = temperature;
 			boolean touch = touchSensor.isPressed();
 			this.touch = touch;
-			Color color = colorSensor.getRawColor();
+			Color color = colorSensor.getColor();
 			this.color[0] = color.getRed();
 			this.color[1] = color.getGreen();
 			this.color[2] = color.getBlue();
