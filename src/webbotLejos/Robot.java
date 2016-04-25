@@ -1,5 +1,6 @@
 package webbotLejos;
 
+import lejos.nxt.LCD;
 import lejos.nxt.NXTRegulatedMotor;
 // Hello David 
 
@@ -46,5 +47,18 @@ public class Robot
    {
       leftMotor.flt();
       rightMotor.flt();
+   }
+   
+   public void display(String text)
+   {
+	   LCD.clearDisplay();
+	   int index = 0;
+	   int line = 0;
+	   while(index < text.length())
+	   {
+		   LCD.drawString(text.substring(index, Math.min(index + 16, text.length())), 0, line);
+		   line+=1;
+		   index+=16;
+	   }
    }
 }
