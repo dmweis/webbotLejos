@@ -18,13 +18,22 @@ public class SensorUpdaterThread implements Runnable{
 		executionThread.start();
 	}
 	
+	private byte[] dataInByte()
+	{
+		int distance = sensorHandler.getDistance();
+		boolean touch = sensorHandler.getTouch();
+		float temperature = sensorHandler.getTemperature();
+		int[] RGB = sensorHandler.getColor();
+		String data = distance + " " + touch + " " + temperature + " " + RGB[0] + " " + RGB[1] + " " + RGB[2] + "\n";
+		return data.getBytes();
+	}
 	@Override
 	public void run() {
 		while(true)
 		{
-			byte[] distance = new byte[]{(byte) sensorHandler.getDistance()};
+			byte[] data = dataInByte();
 			try {
-				output.write(distance);
+				output.write(data);
 				output.flush();
 			} catch (IOException e) {
 			}
