@@ -8,11 +8,12 @@ public class MainTest {
 	public static void main(String[] args) {
 		Robot robot = new Robot(Motor.B, Motor.A);
 		SensorHandler sensorHandler = new SensorHandler(SensorPort.S3, SensorPort.S4, SensorPort.S2, SensorPort.S1);
-		SensorUpdaterThread sensorUpdaterThread = new SensorUpdaterThread(sensorHandler);
+		RemoteController remote = new RemoteController(robot, sensorHandler);
 		while(true){
-			RemoteController remote = new RemoteController(robot, sensorUpdaterThread);
-			remote.connect();
-			remote.run();
+			if (remote.connect()) {
+				remote.run();
+				robot.stop();
+			}
 		}
 	}
 

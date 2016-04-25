@@ -8,27 +8,32 @@ import lejos.nxt.comm.NXTConnection;
 
 public class RemoteController{
 	private Robot robot;
-	private SensorUpdaterThread sensorUpdater;
+	private SensorHandler sensorHandler;
 
 	private NXTConnection connection;
 	private OutputStream output;
 	private InputStream input;
 
-	public RemoteController(Robot robot, SensorUpdaterThread sensorUpdater) {
+	public RemoteController(Robot robot, SensorHandler sensorHandler) {
 		this.robot = robot;
-		this.sensorUpdater = sensorUpdater;;
+		this.sensorHandler = sensorHandler;
 		
 		this.connection = null;
 		this.output = null;
 		this.input = null;
 	}
 
-	public void connect() {
+	public boolean connect() {
 		robot.display("Waiting for connection");
 		connection = Bluetooth.waitForConnection(0, NXTConnection.RAW);
 		robot.display("Connected");
-		input = connection.openInputStream();
-		output = connection.openOutputStream();
+		try {
+			input = connection.openInputStream();
+			output = connection.openOutputStream();
+		} catch (Exception e){
+			return false;
+		}
+		return true;
 	}
 	
 	public void run()
@@ -48,17 +53,19 @@ public class RemoteController{
 				case 4 : robot.turnRight(); break;
 				case 5 : robot.stop(); break;
 				case 6 : robot.flt(); break;
-				case 7 : this.sendSensorData(); break;
+				case 7 : startSensorUpdates(); break;
 				}
-			} catch (Exception e) { return; }
+			} catch (Exception e) 
+			{ 
+				robot.stop();
+				sensorHandler.stop();
+				return; 
+			}
 		}
 	}
 	
-	private void sendSensorData()
+	private void startSensorUpdates()
 	{
-		if(!sensorUpdater.isRunning())
-		{
-			sensorUpdater.start(output, 500);
-		}
+		sensorHandler.startSending(output, 500);
 	}
 }
