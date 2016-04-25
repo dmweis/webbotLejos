@@ -37,13 +37,13 @@ public class Robot
       rightMotor.backward();
    }
    
-   public synchronized void stop()
+   public void stop()
    {
       leftMotor.stop(true);
       rightMotor.stop(true);
    }
    
-   public synchronized void flt()
+   public void flt()
    {
       leftMotor.flt(true);
       rightMotor.flt(true);
