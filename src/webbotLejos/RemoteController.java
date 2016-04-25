@@ -1,20 +1,18 @@
 package webbotLejos;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
-import lejos.nxt.LCD;
 import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.comm.NXTConnection;
 
-public class RemoteController {
+public class RemoteController{
 	private SensorHandler sensorHandler;
 	private Robot robot;
 
 	private NXTConnection connection;
-	private DataOutputStream output;
+	private OutputStream output;
 	private InputStream input;
 
 	public RemoteController(SensorHandler sensorHandler, Robot robot) {
@@ -31,7 +29,7 @@ public class RemoteController {
 		connection = Bluetooth.waitForConnection(0, NXTConnection.RAW);
 		robot.display("Connected");
 		input = connection.openInputStream();
-		output = connection.openDataOutputStream();
+		output = connection.openOutputStream();
 	}
 	
 	public void run()
@@ -40,6 +38,7 @@ public class RemoteController {
 		{
 			try {
 				int command = input.read();
+				robot.display("" + command);
 				switch (command)
 				{
 				case 0 : robot.display("Reading not implemented yet"); break;
@@ -49,8 +48,14 @@ public class RemoteController {
 				case 4 : robot.turnRight(); break;
 				case 5 : robot.stop(); break;
 				case 6 : robot.flt(); break;
+				case 7 : this.sendSensorData(); break;
 				}
 			} catch (IOException e) {}
 		}
+	}
+	
+	private void sendSensorData()
+	{
+		new SensorUpdaterThread(sensorHandler, output, 1000);
 	}
 }

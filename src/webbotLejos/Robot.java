@@ -39,6 +39,7 @@ public class Robot
    
    public void stop()
    {
+	   flt(); //this should fix the slow down effect
       leftMotor.stop();
       rightMotor.stop();
    }
