@@ -1,0 +1,6 @@
+*.nxd
+*.nxj
+bin
+.settings
+.project
+.classpath
