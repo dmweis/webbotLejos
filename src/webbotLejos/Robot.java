@@ -37,14 +37,13 @@ public class Robot
       rightMotor.backward();
    }
    
-   public void stop()
+   public synchronized void stop()
    {
-	   flt(); //this should fix the slow down effect
       leftMotor.stop();
       rightMotor.stop();
    }
    
-   public void flt()
+   public synchronized void flt()
    {
       leftMotor.flt();
       rightMotor.flt();
