@@ -10,6 +10,7 @@ import lejos.nxt.comm.NXTConnection;
 public class RemoteController{
 	private SensorHandler sensorHandler;
 	private Robot robot;
+	private SensorUpdaterThread sensorUpdater;
 
 	private NXTConnection connection;
 	private OutputStream output;
@@ -18,6 +19,7 @@ public class RemoteController{
 	public RemoteController(SensorHandler sensorHandler, Robot robot) {
 		this.sensorHandler = sensorHandler;
 		this.robot = robot;
+		this.sensorUpdater = null;
 		
 		this.connection = null;
 		this.output = null;
@@ -56,6 +58,9 @@ public class RemoteController{
 	
 	private void sendSensorData()
 	{
-		new SensorUpdaterThread(sensorHandler, output, 1000);
+		if(sensorUpdater == null)
+		{
+			sensorUpdater = new SensorUpdaterThread(sensorHandler, output, 500);
+		}
 	}
 }
