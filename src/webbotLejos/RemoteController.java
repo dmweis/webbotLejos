@@ -1,6 +1,5 @@
 package webbotLejos;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -8,30 +7,33 @@ import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.comm.NXTConnection;
 
 public class RemoteController{
-	private SensorHandler sensorHandler;
 	private Robot robot;
-	private SensorUpdaterThread sensorUpdater;
+	private SensorHandler sensorHandler;
 
 	private NXTConnection connection;
 	private OutputStream output;
 	private InputStream input;
 
-	public RemoteController(SensorHandler sensorHandler, Robot robot) {
-		this.sensorHandler = sensorHandler;
+	public RemoteController(Robot robot, SensorHandler sensorHandler) {
 		this.robot = robot;
-		this.sensorUpdater = null;
+		this.sensorHandler = sensorHandler;
 		
 		this.connection = null;
 		this.output = null;
 		this.input = null;
 	}
 
-	public void connect() {
+	public boolean connect() {
 		robot.display("Waiting for connection");
 		connection = Bluetooth.waitForConnection(0, NXTConnection.RAW);
 		robot.display("Connected");
-		input = connection.openInputStream();
-		output = connection.openOutputStream();
+		try {
+			input = connection.openInputStream();
+			output = connection.openOutputStream();
+		} catch (Exception e){
+			return false;
+		}
+		return true;
 	}
 	
 	public void run()
@@ -43,6 +45,7 @@ public class RemoteController{
 				robot.display("" + command);
 				switch (command)
 				{
+				case -1 : return;
 				case 0 : robot.display("Reading not implemented yet"); break;
 				case 1 : robot.forward(); break;
 				case 2 : robot.backward(); break;
@@ -50,17 +53,19 @@ public class RemoteController{
 				case 4 : robot.turnRight(); break;
 				case 5 : robot.stop(); break;
 				case 6 : robot.flt(); break;
-				case 7 : this.sendSensorData(); break;
+				case 7 : startSensorUpdates(); break;
 				}
-			} catch (IOException e) {}
+			} catch (Exception e) 
+			{ 
+				robot.stop();
+				sensorHandler.stop();
+				return; 
+			}
 		}
 	}
 	
-	private void sendSensorData()
+	private void startSensorUpdates()
 	{
-		if(sensorUpdater == null)
-		{
-			sensorUpdater = new SensorUpdaterThread(sensorHandler, output, 500);
-		}
+		sensorHandler.startSending(output, 500);
 	}
 }
