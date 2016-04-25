@@ -40,16 +40,18 @@ public class SensorHandler implements Runnable{
 	
 	@Override
 	public void run() {
-		int distance = ultraSensor.getDistance();
-		this.distance = distance;
-		float temperature = tempSensor.getTemperature();
-		this.temperature = temperature;
-		boolean touch = touchSensor.isPressed();
-		this.touch = touch;
-		Color color = colorSensor.getRawColor();
-		this.color[0] = color.getRed();
-		this.color[1] = color.getGreen();
-		this.color[2] = color.getBlue();
+		while (true) {
+			int distance = ultraSensor.getDistance();
+			this.distance = distance;
+			float temperature = tempSensor.getTemperature();
+			this.temperature = temperature;
+			boolean touch = touchSensor.isPressed();
+			this.touch = touch;
+			Color color = colorSensor.getRawColor();
+			this.color[0] = color.getRed();
+			this.color[1] = color.getGreen();
+			this.color[2] = color.getBlue();
+		}
 	}
 	
 	public int getDistance() {
