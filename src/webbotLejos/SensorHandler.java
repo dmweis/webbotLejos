@@ -1,6 +1,7 @@
 package webbotLejos;
 
 import java.io.OutputStream;
+import java.util.HashMap;
 
 import lejos.nxt.ColorSensor;
 import lejos.nxt.ColorSensor.Color;
@@ -58,7 +59,8 @@ public class SensorHandler implements Runnable{
 			float temperature = tempSensor.getTemperature();
 			boolean touch = touchSensor.isPressed();
 			Color color = colorSensor.getColor();
-			String data = distance + " " + touch + " " + temperature + " " + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + "\n";
+			String colorName = getColorName(color);
+			String data = distance + " " + touch + " " + temperature + " " + color.getRed() + " " + color.getGreen() + " " + color.getBlue() + colorName + "\n";
 			try {
 				output.write(data.getBytes());
 				output.flush();
@@ -66,6 +68,26 @@ public class SensorHandler implements Runnable{
 				output = null;
 			}
 			Delay.msDelay(delay);
+		}
+	}
+	
+	private String getColorName(Color color){
+		switch (color.getColor()){
+		case Color.BLACK : return "BLACK";
+		case Color.BLUE : return "BLUE";
+		case Color.CYAN : return "CYAN";
+		case Color.DARK_GRAY : return "DARK_GRAY";
+		case Color.GRAY : return "GRAY";
+		case Color.GREEN : return "GREEN";
+		case Color.LIGHT_GRAY : return "LIGHT_GRAY";
+		case Color.MAGENTA : return "MAGENTA";
+		case Color.ORANGE : return "ORANGE";
+		case Color.PINK : return "PINK";
+		case Color.RED : return "RED";
+		case Color.WHITE : return "WHITE";
+		case Color.YELLOW : return "YELLOW";
+		case Color.NONE : return "NONE";
+		default : return "UNKNOWN";
 		}
 	}
 
