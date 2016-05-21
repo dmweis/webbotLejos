@@ -6,6 +6,10 @@ import java.io.OutputStream;
 import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.comm.NXTConnection;
 
+/**
+ * @author DWEIS
+ * class that handles remote controlling of the Robot
+ */
 public class RemoteController{
 	private Robot robot;
 	private SensorHandler sensorHandler;
@@ -14,6 +18,10 @@ public class RemoteController{
 	private OutputStream output;
 	private InputStream input;
 
+	/**
+	 * @param robot instance of Class Robot
+	 * @param sensorHandler Sensor handler used poll data
+	 */
 	public RemoteController(Robot robot, SensorHandler sensorHandler) {
 		this.robot = robot;
 		this.sensorHandler = sensorHandler;
@@ -22,7 +30,10 @@ public class RemoteController{
 		this.output = null;
 		this.input = null;
 	}
-
+	
+	/** method waits for Bluetooth connection
+	 * @return true is connection was successfully initialized
+	 */
 	public boolean connect() {
 		robot.display("Waiting for connection");
 		connection = Bluetooth.waitForConnection(0, NXTConnection.RAW);
@@ -36,6 +47,9 @@ public class RemoteController{
 		return true;
 	}
 	
+	/**
+	 * thread for receiving and dispatching commands for the robot
+	 */
 	public void run()
 	{
 		while(true)
@@ -46,7 +60,7 @@ public class RemoteController{
 				switch (command)
 				{
 				case -1 : return;
-				case 0 : robot.display("Reading not implemented yet"); break;
+				case 0 : robot.display("this function was deprecated"); break;
 				case 1 : robot.forward(); break;
 				case 2 : robot.backward(); break;
 				case 3 : robot.turnLeft(); break;
@@ -64,6 +78,9 @@ public class RemoteController{
 		}
 	}
 	
+	/**
+	 * this method starts the sensor update thread
+	 */
 	private void startSensorUpdates()
 	{
 		sensorHandler.startSending(output, 500);
